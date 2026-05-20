@@ -519,6 +519,59 @@ export const Admin = () => {
     showToast('PDF звіт відкрито для друку/збереження');
   };
 
+  const [imageFetchProgress, setImageFetchProgress] = useState<{ done: number; total: number; running: boolean }>({ done: 0, total: 0, running: false });
+
+  const handleAutoFetchImages = async () => {
+    const productsWithoutImage = localProducts.filter(p => !p.image);
+    if (productsWithoutImage.length === 0) {
+      showToast('Усі товари вже мають фото', 'info');
+      return;
+    }
+    const batchSize = Math.min(productsWithoutImage.length, 50);
+    const batch = productsWithoutImage.slice(0, batchSize);
+    setImageFetchProgress({ done: 0, total: batch.length, running: true });
+    pushHistory(localProducts);
+    let found = 0;
+    const updatedProducts = [...localProducts];
+
+    for (let i = 0; i < batch.length; i++) {
+      const product = batch[i];
+      const searchName = product.name.replace(/\s*\d{4,}\s*/g, '').trim();
+      try {
+        const query = encodeURIComponent(searchName + ' купити');
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://www.google.com/search?q=' + query + '&tbm=isch&udm=2')}`;
+        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+        if (res.ok) {
+          const html = await res.text();
+          const imgMatches = html.match(/\["(https?:\/\/[^"]+\.(?:jpg|jpeg|png|webp)(?:\?[^"]*)?)",\d+,\d+\]/gi);
+          if (imgMatches && imgMatches.length > 0) {
+            for (const m of imgMatches) {
+              const urlMatch = m.match(/"(https?:\/\/[^"]+)"/);
+              if (urlMatch) {
+                const imgUrl = urlMatch[1];
+                if (!imgUrl.includes('google') && !imgUrl.includes('gstatic') && imgUrl.length < 500) {
+                  const idx = updatedProducts.findIndex(p => p.id === product.id);
+                  if (idx >= 0) {
+                    updatedProducts[idx] = { ...updatedProducts[idx], image: imgUrl };
+                    found++;
+                  }
+                  break;
+                }
+              }
+            }
+          }
+        }
+      } catch {}
+      setImageFetchProgress({ done: i + 1, total: batch.length, running: true });
+      await new Promise(r => setTimeout(r, 300));
+    }
+
+    setLocalProducts(updatedProducts);
+    hasLocalChangesRef.current = true;
+    setImageFetchProgress({ done: batch.length, total: batch.length, running: false });
+    showToast(`Знайдено фото для ${found} з ${batch.length} товарів. Натисніть «Зберегти».`);
+  };
+
   const handleExtractArticles = () => {
     const normalized = localProducts.map(normalizeProductForStorage);
     const changed = normalized.filter((p, idx) => {
@@ -748,6 +801,14 @@ export const Admin = () => {
             <button onClick={handleExtractArticles} className="flex items-center gap-2 text-sm text-violet-700 hover:text-violet-900 px-3 py-2 rounded-lg border border-violet-200 bg-violet-50 hover:bg-violet-100">
               <Sparkles className="w-4 h-4" />
               Витягнути артикули
+            </button>
+            <button
+              onClick={handleAutoFetchImages}
+              disabled={imageFetchProgress.running}
+              className="flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-900 px-3 py-2 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 disabled:opacity-50"
+            >
+              {imageFetchProgress.running ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageLucide className="w-4 h-4" />}
+              {imageFetchProgress.running ? `Пошук фото ${imageFetchProgress.done}/${imageFetchProgress.total}...` : 'Автопошук фото'}
             </button>
             <label className="flex items-center gap-2 text-sm text-gray-600 hover:text-black px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
               <Upload className="w-4 h-4" />

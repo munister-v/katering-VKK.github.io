@@ -14,8 +14,8 @@ export interface Banner {
 const BANNERS_KEY = 'lumu_admin_banners';
 
 const DEFAULT_BANNERS: Banner[] = [
-  { id: 1, title: '\u041d\u043e\u0432\u0430 \u043a\u043e\u043b\u0435\u043a\u0446\u0456\u044f \u043a\u043d\u0438\u0433', subtitle: '\u041f\u0456\u0437\u043d\u0430\u0432\u0430\u043b\u044c\u043d\u0456 \u043a\u043d\u0438\u0433\u0438 \u0434\u043b\u044f \u0434\u0456\u0442\u0435\u0439 \u0432\u0456\u0434 3 \u0440\u043e\u043a\u0456\u0432', gradient: 'linear-gradient(135deg, hsl(340, 75%, 60%) 0%, hsl(20, 85%, 65%) 100%)', active: true },
-  { id: 2, title: '\u0406\u0433\u0440\u0430\u0448\u043a\u0438 \u0437\u0456 \u0437\u043d\u0438\u0436\u043a\u043e\u044e', subtitle: '\u0414\u043e -30% \u043d\u0430 \u043e\u0431\u0440\u0430\u043d\u0456 \u0442\u043e\u0432\u0430\u0440\u0438', gradient: 'linear-gradient(135deg, hsl(230, 70%, 55%) 0%, hsl(270, 65%, 70%) 100%)', active: true },
+  { id: 1, title: 'Нова колекція книг', subtitle: 'Пізнавальні книги для дітей від 3 років', gradient: 'linear-gradient(135deg, hsl(340, 75%, 60%) 0%, hsl(20, 85%, 65%) 100%)', active: true },
+  { id: 2, title: 'Іграшки зі знижкою', subtitle: 'До -30% на обрані товари', gradient: 'linear-gradient(135deg, hsl(230, 70%, 55%) 0%, hsl(270, 65%, 70%) 100%)', active: true },
 ];
 
 function loadBanners(): Banner[] {
@@ -44,8 +44,8 @@ export function BannersEditor() {
     const maxId = banners.reduce((m, b) => Math.max(m, b.id), 0);
     const newBanner: Banner = {
       id: maxId + 1,
-      title: '\u041d\u043e\u0432\u0438\u0439 \u0431\u0430\u043d\u0435\u0440',
-      subtitle: '\u041e\u043f\u0438\u0441 \u0431\u0430\u043d\u0435\u0440\u0430',
+      title: 'Новий банер',
+      subtitle: 'Опис банера',
       gradient: 'linear-gradient(135deg, hsl(200, 70%, 55%) 0%, hsl(250, 65%, 65%) 100%)',
       active: true,
     };
@@ -58,7 +58,7 @@ export function BannersEditor() {
   };
 
   const deleteBanner = (id: number) => {
-    if (confirm('\u0412\u0438\u0434\u0430\u043b\u0438\u0442\u0438 \u0431\u0430\u043d\u0435\u0440?')) {
+    if (confirm('Видалити банер?')) {
       setBanners(prev => prev.filter(b => b.id !== id));
       if (editingId === id) setEditingId(null);
     }
@@ -86,19 +86,19 @@ export function BannersEditor() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">{'\u0411\u0430\u043d\u0435\u0440\u0438 \u043d\u0430 \u0433\u043e\u043b\u043e\u0432\u043d\u0456\u0439'}</h2>
-          <p className="text-sm text-gray-500">{'\u041d\u0430\u043b\u0430\u0448\u0442\u0443\u0439\u0442\u0435 \u0441\u043b\u0430\u0439\u0434\u0435\u0440 \u043d\u0430 \u0433\u043e\u043b\u043e\u0432\u043d\u0456\u0439 \u0441\u0442\u043e\u0440\u0456\u043d\u0446\u0456'}</p>
+          <h2 className="text-lg font-bold text-gray-900">{'Банери на головній'}</h2>
+          <p className="text-sm text-gray-500">{'Налаштуйте слайдер на головній сторінці'}</p>
         </div>
         <button onClick={addBanner} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black text-white text-sm font-bold hover:bg-gray-800">
           <Plus className="w-4 h-4" />
-          {'\u0414\u043e\u0434\u0430\u0442\u0438'}
+          {'Додати'}
         </button>
       </div>
 
       {banners.length === 0 ? (
         <div className="text-center py-12 text-gray-400">
           <ImageIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p className="text-sm">{'\u0411\u0430\u043d\u0435\u0440\u0456\u0432 \u043d\u0435\u043c\u0430\u0454'}</p>
+          <p className="text-sm">{'Банерів немає'}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -114,7 +114,7 @@ export function BannersEditor() {
                   )}
                   <div className="absolute inset-0 flex items-end p-3">
                     {!banner.active && (
-                      <span className="px-2 py-0.5 rounded-full bg-black/50 text-white text-xs font-bold">{'\u041d\u0435\u0430\u043a\u0442\u0438\u0432\u043d\u0438\u0439'}</span>
+                      <span className="px-2 py-0.5 rounded-full bg-black/50 text-white text-xs font-bold">{'Неактивний'}</span>
                     )}
                   </div>
                 </div>
@@ -136,28 +136,28 @@ export function BannersEditor() {
                   {editingId === banner.id && (
                     <div className="mt-4 space-y-3 border-t border-gray-100 pt-4">
                       <div>
-                        <label className="text-xs font-bold text-gray-500 uppercase">{'\u0417\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a'}</label>
+                        <label className="text-xs font-bold text-gray-500 uppercase">{'Заголовок'}</label>
                         <input value={banner.title} onChange={e => updateBanner(banner.id, { title: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm mt-1 focus:outline-none focus:ring-2 focus:ring-violet-500" />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-gray-500 uppercase">{'\u041f\u0456\u0434\u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a'}</label>
+                        <label className="text-xs font-bold text-gray-500 uppercase">{'Підзаголовок'}</label>
                         <input value={banner.subtitle} onChange={e => updateBanner(banner.id, { subtitle: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm mt-1 focus:outline-none focus:ring-2 focus:ring-violet-500" />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-gray-500 uppercase">{'\u0413\u0440\u0430\u0434\u0456\u0454\u043d\u0442'}</label>
+                        <label className="text-xs font-bold text-gray-500 uppercase">{'Градієнт'}</label>
                         <input value={banner.gradient} onChange={e => updateBanner(banner.id, { gradient: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm mt-1 focus:outline-none focus:ring-2 focus:ring-violet-500" placeholder="linear-gradient(135deg, ...)" />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-gray-500 uppercase">{'\u041f\u043e\u0441\u0438\u043b\u0430\u043d\u043d\u044f'}</label>
+                        <label className="text-xs font-bold text-gray-500 uppercase">{'Посилання'}</label>
                         <input value={banner.link || ''} onChange={e => updateBanner(banner.id, { link: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm mt-1 focus:outline-none focus:ring-2 focus:ring-violet-500" placeholder="/category/books" />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-gray-500 uppercase">{'\u0417\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u043d\u044f (URL)'}</label>
+                        <label className="text-xs font-bold text-gray-500 uppercase">{'Зображення (URL)'}</label>
                         <input value={banner.imageUrl || ''} onChange={e => updateBanner(banner.id, { imageUrl: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm mt-1 focus:outline-none focus:ring-2 focus:ring-violet-500" placeholder="https://..." />
                       </div>
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" checked={banner.active} onChange={e => updateBanner(banner.id, { active: e.target.checked })} className="rounded" />
-                        <span className="text-sm text-gray-700">{'\u0410\u043a\u0442\u0438\u0432\u043d\u0438\u0439'}</span>
+                        <span className="text-sm text-gray-700">{'Активний'}</span>
                       </label>
                     </div>
                   )}

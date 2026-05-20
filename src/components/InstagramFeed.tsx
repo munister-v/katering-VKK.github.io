@@ -17,49 +17,49 @@ const POSTS_KEY = 'lumu_instagram_posts';
 const DEFAULT_POSTS: InstagramPost[] = [
   {
     id: '1',
-    imageUrl: '/images/insta-placeholder-1.jpg',
-    caption: '\u041d\u043e\u0432\u0456 \u043d\u0430\u0434\u0445\u043e\u0434\u0436\u0435\u043d\u043d\u044f \u0456\u0433\u0440\u0430\u0448\u043e\u043a \u0432\u0436\u0435 \u0432 \u043d\u0430\u044f\u0432\u043d\u043e\u0441\u0442\u0456! \u2728',
-    link: INSTAGRAM_URL,
+    imageUrl: '/images/instagram/insta-1.jpg',
+    caption: 'Нові надходження іграшок вже в наявності! ✨',
+    link: 'https://www.instagram.com/malyenkyi.vsesvit_/reel/DWn9J1zDRhl/',
     likes: 42,
     comments: 5,
   },
   {
     id: '2',
-    imageUrl: '/images/insta-placeholder-2.jpg',
-    caption: '\u041a\u043d\u0438\u0433\u0438 \u0434\u043b\u044f \u043d\u0430\u0439\u043c\u0435\u043d\u0448\u0438\u0445 \u0447\u0438\u0442\u0430\u0447\u0456\u0432 \ud83d\udcda',
-    link: INSTAGRAM_URL,
+    imageUrl: '/images/instagram/insta-2.jpg',
+    caption: 'Ебру Арт — мистецтво на воді для дітей 🎨',
+    link: 'https://www.instagram.com/malyenkyi.vsesvit_/reel/DUBl2kbDbgO/',
     likes: 38,
     comments: 3,
   },
   {
     id: '3',
-    imageUrl: '/images/insta-placeholder-3.jpg',
-    caption: '\u0412\u043b\u0430\u0441\u043d\u0435 \u0432\u0438\u0440\u043e\u0431\u043d\u0438\u0446\u0442\u0432\u043e \u2014 \u0437\u0440\u043e\u0431\u043b\u0435\u043d\u043e \u0437 \u043b\u044e\u0431\u043e\u0432\'\u044e \ud83d\udc9c',
-    link: INSTAGRAM_URL,
+    imageUrl: '/images/instagram/insta-3.jpg',
+    caption: 'Розмальовки та творчі набори 🖍️',
+    link: 'https://www.instagram.com/malyenkyi.vsesvit_/reel/DVL6b0EjL0Z/',
     likes: 56,
     comments: 8,
   },
   {
     id: '4',
-    imageUrl: '/images/insta-placeholder-4.jpg',
-    caption: '\u041f\u043e\u0434\u0430\u0440\u0443\u043d\u043a\u0438 \u0434\u043b\u044f \u0434\u0456\u0442\u043e\u043a \u043d\u0430 \u0431\u0443\u0434\u044c-\u044f\u043a\u0438\u0439 \u0432\u0456\u043a \ud83c\udf81',
-    link: INSTAGRAM_URL,
+    imageUrl: '/images/instagram/insta-4.jpg',
+    caption: 'Подарунки для діток на будь-який вік 🎁',
+    link: 'https://www.instagram.com/malyenkyi.vsesvit_/reel/DYMq8R2NI5h/',
     likes: 31,
     comments: 2,
   },
   {
     id: '5',
-    imageUrl: '/images/insta-placeholder-5.jpg',
-    caption: '\u0417\u0430\u0432\u0456\u0442\u0430\u0439\u0442\u0435 \u0434\u043e \u043d\u0430\u0441 \u0432 \u0406\u0440\u043f\u0456\u043d\u044c! \ud83c\udfe0',
-    link: INSTAGRAM_URL,
+    imageUrl: '/images/instagram/insta-5.jpg',
+    caption: 'Завітайте до нас — нова колекція! 🌟',
+    link: 'https://www.instagram.com/malyenkyi.vsesvit_/reel/DWytrJljRoi/',
     likes: 45,
     comments: 6,
   },
   {
     id: '6',
-    imageUrl: '/images/insta-placeholder-6.jpg',
-    caption: '\u041d\u043e\u0432\u0430 \u043a\u043e\u043b\u0435\u043a\u0446\u0456\u044f \u0432\u0436\u0435 \u0447\u0435\u043a\u0430\u0454 \u043d\u0430 \u0432\u0430\u0441! \ud83c\udf1f',
-    link: INSTAGRAM_URL,
+    imageUrl: '/images/instagram/insta-6.jpg',
+    caption: 'Дерев\'яні іграшки ручної роботи 🪵',
+    link: 'https://www.instagram.com/malyenkyi.vsesvit_/reel/DWjdWbWjOmF/',
     likes: 29,
     comments: 4,
   },
@@ -90,10 +90,10 @@ export function InstagramFeed() {
             @malyenkyi.vsesvit_
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-            {'\u041c\u0438 \u0432 Instagram'}
+            {'Ми в Instagram'}
           </h2>
           <p className="text-gray-500 mt-3 max-w-lg mx-auto">
-            {'\u0421\u043b\u0456\u0434\u043a\u0443\u0439\u0442\u0435 \u0437\u0430 \u043d\u043e\u0432\u0438\u043d\u043a\u0430\u043c\u0438, \u0430\u043a\u0446\u0456\u044f\u043c\u0438 \u0442\u0430 \u043d\u0430\u0434\u0445\u043d\u0435\u043d\u043d\u044f\u043c \u0443 \u043d\u0430\u0448\u043e\u043c\u0443 Instagram'}
+            {'Слідкуйте за новинками, акціями та надхненням у нашому Instagram'}
           </p>
         </div>
 
@@ -157,7 +157,7 @@ export function InstagramFeed() {
             className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 text-white font-bold text-sm hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:-translate-y-0.5"
           >
             <Instagram className="w-5 h-5" />
-            {'\u041f\u0456\u0434\u043f\u0438\u0441\u0430\u0442\u0438\u0441\u044f \u0432 Instagram'}
+            {'Підписатися в Instagram'}
             <ExternalLink className="w-4 h-4 opacity-70" />
           </a>
         </div>

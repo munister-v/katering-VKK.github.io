@@ -17,7 +17,7 @@ import type { Product } from '../../data/products';
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, PointElement, LineElement, Title, Tooltip, Legend);
 
 function priceNumber(p: Product) {
-  return parseInt(String(p.price || '').replace(/\s/g, '').replace('\u20b4', ''), 10) || 0;
+  return parseInt(String(p.price || '').replace(/\s/g, '').replace('₴', ''), 10) || 0;
 }
 
 function productUnits(p: Product) {
@@ -39,7 +39,7 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
   const categoryData = useMemo(() => {
     const map: Record<string, { count: number; units: number; value: number }> = {};
     products.forEach(p => {
-      const cat = p.category || '\u0406\u043d\u0448\u0435';
+      const cat = p.category || 'Інше';
       map[cat] = map[cat] || { count: 0, units: 0, value: 0 };
       map[cat].count += 1;
       map[cat].units += productUnits(p);
@@ -56,11 +56,11 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
 
   const priceDistribution = useMemo(() => {
     const ranges = [
-      { label: '0\u2013100 \u20b4', min: 0, max: 100 },
-      { label: '101\u2013300 \u20b4', min: 101, max: 300 },
-      { label: '301\u2013500 \u20b4', min: 301, max: 500 },
-      { label: '501\u20131000 \u20b4', min: 501, max: 1000 },
-      { label: '1000+ \u20b4', min: 1001, max: Infinity },
+      { label: '0–100 ₴', min: 0, max: 100 },
+      { label: '101–300 ₴', min: 101, max: 300 },
+      { label: '301–500 ₴', min: 301, max: 500 },
+      { label: '501–1000 ₴', min: 501, max: 1000 },
+      { label: '1000+ ₴', min: 1001, max: Infinity },
     ];
     const counts = ranges.map(r => products.filter(p => {
       const pr = priceNumber(p);
@@ -80,7 +80,7 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
     const withDesc = products.filter(p => String(p.description ?? '').trim()).length;
     const withArticle = products.filter(p => String(p.article ?? '').trim()).length;
     return {
-      labels: ['\u0417 \u0444\u043e\u0442\u043e', '\u0411\u0435\u0437 \u0444\u043e\u0442\u043e', '\u0417 \u043e\u043f\u0438\u0441\u043e\u043c', '\u0411\u0435\u0437 \u043e\u043f\u0438\u0441\u0443', '\u0417 \u0430\u0440\u0442\u0438\u043a\u0443\u043b\u043e\u043c', '\u0411\u0435\u0437 \u0430\u0440\u0442\u0438\u043a\u0443\u043b\u0443'],
+      labels: ['З фото', 'Без фото', 'З описом', 'Без опису', 'З артикулом', 'Без артикулу'],
       values: [withImage, products.length - withImage, withDesc, products.length - withDesc, withArticle, products.length - withArticle],
     };
   }, [products]);
@@ -89,7 +89,7 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">{'\u0422\u043e\u0432\u0430\u0440\u0438 \u043f\u043e \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0456\u044f\u0445'}</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">{'Товари по категоріях'}</h3>
           <Doughnut
             data={{
               labels: categoryData.labels,
@@ -108,12 +108,12 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">{'\u0412\u0430\u0440\u0442\u0456\u0441\u0442\u044c \u043f\u043e \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0456\u044f\u0445'}</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">{'Вартість по категоріях'}</h3>
           <Bar
             data={{
               labels: categoryData.labels,
               datasets: [{
-                label: '\u0421\u0443\u043c\u0430 (\u20b4)',
+                label: 'Сума (₴)',
                 data: categoryData.values,
                 backgroundColor: PALETTE.slice(0, categoryData.labels.length),
                 borderRadius: 8,
@@ -122,7 +122,7 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
             options={{
               responsive: true,
               plugins: { legend: { display: false } },
-              scales: { y: { beginAtZero: true, ticks: { callback: v => Number(v).toLocaleString('uk-UA') + ' \u20b4' } } },
+              scales: { y: { beginAtZero: true, ticks: { callback: v => Number(v).toLocaleString('uk-UA') + ' ₴' } } },
             }}
           />
         </div>
@@ -130,12 +130,12 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">{'\u0420\u043e\u0437\u043f\u043e\u0434\u0456\u043b \u0446\u0456\u043d'}</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">{'Розподіл цін'}</h3>
           <Bar
             data={{
               labels: priceDistribution.labels,
               datasets: [{
-                label: '\u041a\u0456\u043b\u044c\u043a\u0456\u0441\u0442\u044c \u0442\u043e\u0432\u0430\u0440\u0456\u0432',
+                label: 'Кількість товарів',
                 data: priceDistribution.counts,
                 backgroundColor: 'rgba(139,92,246,0.7)',
                 borderRadius: 8,
@@ -150,7 +150,7 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">{'\u042f\u043a\u0456\u0441\u0442\u044c \u043a\u0430\u0440\u0442\u043e\u043a'}</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">{'Якість карток'}</h3>
           <Bar
             data={{
               labels: qualityData.labels,
@@ -171,12 +171,12 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">{'\u0422\u043e\u043f-10 \u0442\u043e\u0432\u0430\u0440\u0456\u0432 \u0437\u0430 \u0432\u0430\u0440\u0442\u0456\u0441\u0442\u044e (\u0446\u0456\u043d\u0430 \u00d7 \u044e\u043d\u0456\u0442\u0438)'}</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-4">{'Топ-10 товарів за вартістю (ціна × юніти)'}</h3>
         <Bar
           data={{
-            labels: topProducts.map(p => (p.name.length > 30 ? p.name.slice(0, 27) + '\u2026' : p.name)),
+            labels: topProducts.map(p => (p.name.length > 30 ? p.name.slice(0, 27) + '…' : p.name)),
             datasets: [{
-              label: '\u0412\u0430\u0440\u0442\u0456\u0441\u0442\u044c (\u20b4)',
+              label: 'Вартість (₴)',
               data: topProducts.map(p => priceNumber(p) * productUnits(p)),
               backgroundColor: 'rgba(59,130,246,0.7)',
               borderRadius: 8,
@@ -186,18 +186,18 @@ export function AnalyticsCharts({ products }: { products: Product[] }) {
             responsive: true,
             indexAxis: 'y',
             plugins: { legend: { display: false } },
-            scales: { x: { beginAtZero: true, ticks: { callback: v => Number(v).toLocaleString('uk-UA') + ' \u20b4' } } },
+            scales: { x: { beginAtZero: true, ticks: { callback: v => Number(v).toLocaleString('uk-UA') + ' ₴' } } },
           }}
         />
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">{'\u042e\u043d\u0456\u0442\u0438 \u043f\u043e \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0456\u044f\u0445'}</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-4">{'Юніти по категоріях'}</h3>
         <Line
           data={{
             labels: categoryData.labels,
             datasets: [{
-              label: '\u042e\u043d\u0456\u0442\u0456\u0432',
+              label: 'Юнітів',
               data: categoryData.units,
               borderColor: 'rgba(139,92,246,1)',
               backgroundColor: 'rgba(139,92,246,0.1)',

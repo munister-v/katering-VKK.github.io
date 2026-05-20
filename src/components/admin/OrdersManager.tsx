@@ -14,11 +14,11 @@ export interface Order {
 export type OrderStatus = 'new' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
 const STATUS_CONFIG: Record<OrderStatus, { label: string; color: string; icon: React.ReactNode }> = {
-  new: { label: '\u041d\u043e\u0432\u0435', color: 'bg-blue-100 text-blue-800 border-blue-200', icon: <Clock className="w-4 h-4" /> },
-  processing: { label: '\u0412 \u043e\u0431\u0440\u043e\u0431\u0446\u0456', color: 'bg-amber-100 text-amber-800 border-amber-200', icon: <Package className="w-4 h-4" /> },
-  shipped: { label: '\u0412\u0456\u0434\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e', color: 'bg-violet-100 text-violet-800 border-violet-200', icon: <Truck className="w-4 h-4" /> },
-  delivered: { label: '\u0414\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043e', color: 'bg-green-100 text-green-800 border-green-200', icon: <CheckCircle className="w-4 h-4" /> },
-  cancelled: { label: '\u0421\u043a\u0430\u0441\u043e\u0432\u0430\u043d\u043e', color: 'bg-red-100 text-red-800 border-red-200', icon: <X className="w-4 h-4" /> },
+  new: { label: 'Нове', color: 'bg-blue-100 text-blue-800 border-blue-200', icon: <Clock className="w-4 h-4" /> },
+  processing: { label: 'В обробці', color: 'bg-amber-100 text-amber-800 border-amber-200', icon: <Package className="w-4 h-4" /> },
+  shipped: { label: 'Відправлено', color: 'bg-violet-100 text-violet-800 border-violet-200', icon: <Truck className="w-4 h-4" /> },
+  delivered: { label: 'Доставлено', color: 'bg-green-100 text-green-800 border-green-200', icon: <CheckCircle className="w-4 h-4" /> },
+  cancelled: { label: 'Скасовано', color: 'bg-red-100 text-red-800 border-red-200', icon: <X className="w-4 h-4" /> },
 };
 
 const ORDERS_KEY = 'lumu_admin_orders';
@@ -70,7 +70,7 @@ export function OrdersManager() {
   };
 
   const deleteOrder = (id: string) => {
-    if (confirm('\u0412\u0438\u0434\u0430\u043b\u0438\u0442\u0438 \u0437\u0430\u043c\u043e\u0432\u043b\u0435\u043d\u043d\u044f?')) {
+    if (confirm('Видалити замовлення?')) {
       setOrders(prev => prev.filter(o => o.id !== id));
       if (expandedId === id) setExpandedId(null);
     }
@@ -81,9 +81,9 @@ export function OrdersManager() {
     const newOrder: Order = {
       id,
       date: new Date().toISOString(),
-      customer: { name: '\u041d\u043e\u0432\u0438\u0439 \u043a\u043b\u0456\u0454\u043d\u0442', phone: '+380991234567', city: '\u0406\u0440\u043f\u0456\u043d\u044c' },
-      items: [{ productId: 1, name: '\u0422\u0435\u0441\u0442\u043e\u0432\u0438\u0439 \u0442\u043e\u0432\u0430\u0440', price: '100 \u20b4', qty: 1 }],
-      total: '100 \u20b4',
+      customer: { name: 'Новий клієнт', phone: '+380991234567', city: 'Ірпінь' },
+      items: [{ productId: 1, name: 'Тестовий товар', price: '100 ₴', qty: 1 }],
+      total: '100 ₴',
       status: 'new',
     };
     setOrders(prev => [newOrder, ...prev]);
@@ -98,7 +98,7 @@ export function OrdersManager() {
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="\u041f\u043e\u0448\u0443\u043a \u0437\u0430\u043c\u043e\u0432\u043b\u0435\u043d\u044c..."
+            placeholder="Пошук замовлень..."
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
           />
         </div>
@@ -106,13 +106,13 @@ export function OrdersManager() {
           onClick={addDemoOrder}
           className="px-4 py-2.5 rounded-xl bg-black text-white text-sm font-bold hover:bg-gray-800"
         >
-          + \u0414\u043e\u0434\u0430\u0442\u0438 \u0437\u0430\u043c\u043e\u0432\u043b\u0435\u043d\u043d\u044f
+          + Додати замовлення
         </button>
       </div>
 
       <div className="flex flex-wrap gap-2">
         {(['all', ...STATUS_ORDER] as const).map(s => {
-          const cfg = s === 'all' ? { label: '\u0412\u0441\u0456', color: 'bg-gray-100 text-gray-700' } : STATUS_CONFIG[s];
+          const cfg = s === 'all' ? { label: 'Всі', color: 'bg-gray-100 text-gray-700' } : STATUS_CONFIG[s];
           const count = statusCounts[s] || 0;
           return (
             <button
@@ -129,7 +129,7 @@ export function OrdersManager() {
       {filtered.length === 0 ? (
         <div className="text-center py-12 text-gray-400">
           <Package className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p className="text-sm">{orders.length === 0 ? '\u0417\u0430\u043c\u043e\u0432\u043b\u0435\u043d\u044c \u043f\u043e\u043a\u0438 \u043d\u0435\u043c\u0430\u0454' : '\u041d\u0456\u0447\u043e\u0433\u043e \u043d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e'}</p>
+          <p className="text-sm">{orders.length === 0 ? 'Замовлень поки немає' : 'Нічого не знайдено'}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -170,7 +170,7 @@ export function OrdersManager() {
                       <div className="px-4 pb-4 border-t border-gray-100 pt-4 space-y-4">
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div>
-                            <p className="text-xs font-bold text-gray-500 uppercase mb-1">{'\u041a\u043b\u0456\u0454\u043d\u0442'}</p>
+                            <p className="text-xs font-bold text-gray-500 uppercase mb-1">{'Клієнт'}</p>
                             <p className="text-sm">{order.customer.name}</p>
                             <p className="text-sm text-gray-500">{order.customer.phone}</p>
                             {order.customer.email && <p className="text-sm text-gray-500">{order.customer.email}</p>}
@@ -179,7 +179,7 @@ export function OrdersManager() {
                             {order.customer.comment && <p className="text-sm text-gray-400 italic mt-1">{order.customer.comment}</p>}
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-gray-500 uppercase mb-1">{'\u0422\u043e\u0432\u0430\u0440\u0438'}</p>
+                            <p className="text-xs font-bold text-gray-500 uppercase mb-1">{'Товари'}</p>
                             {order.items.map((item, i) => (
                               <div key={i} className="flex justify-between text-sm py-0.5">
                                 <span>{item.name} &times; {item.qty}</span>
@@ -187,13 +187,13 @@ export function OrdersManager() {
                               </div>
                             ))}
                             <div className="flex justify-between text-sm font-bold border-t border-gray-100 mt-2 pt-2">
-                              <span>{'\u0420\u0430\u0437\u043e\u043c'}</span>
+                              <span>{'Разом'}</span>
                               <span>{order.total}</span>
                             </div>
                           </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-100">
-                          <span className="text-xs text-gray-500 mr-2">{'\u0417\u043c\u0456\u043d\u0438\u0442\u0438 \u0441\u0442\u0430\u0442\u0443\u0441:'}</span>
+                          <span className="text-xs text-gray-500 mr-2">{'Змінити статус:'}</span>
                           {STATUS_ORDER.map(s => (
                             <button
                               key={s}
@@ -207,7 +207,7 @@ export function OrdersManager() {
                           <button
                             onClick={() => deleteOrder(order.id)}
                             className="ml-auto p-1.5 rounded-lg text-red-500 hover:bg-red-50"
-                            title="\u0412\u0438\u0434\u0430\u043b\u0438\u0442\u0438"
+                            title="Видалити"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

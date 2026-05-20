@@ -35,7 +35,7 @@ export function InstagramManager() {
     setPosts(prev => [...prev, {
       id,
       imageUrl: '',
-      caption: '\u041d\u043e\u0432\u0438\u0439 \u043f\u043e\u0441\u0442',
+      caption: 'Новий пост',
       link: INSTAGRAM_URL,
       likes: 0,
       comments: 0,
@@ -47,7 +47,7 @@ export function InstagramManager() {
   };
 
   const deletePost = (id: string) => {
-    if (confirm('\u0412\u0438\u0434\u0430\u043b\u0438\u0442\u0438 \u043f\u043e\u0441\u0442?')) {
+    if (confirm('Видалити пост?')) {
       setPosts(prev => prev.filter(p => p.id !== id));
     }
   };
@@ -68,9 +68,9 @@ export function InstagramManager() {
         <div>
           <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
             <Instagram className="w-5 h-5 text-purple-600" />
-            Instagram \u043f\u043e\u0441\u0442\u0438
+            Instagram пости
           </h2>
-          <p className="text-sm text-gray-500">{'\u0423\u043f\u0440\u0430\u0432\u043b\u0456\u043d\u043d\u044f \u043f\u043e\u0441\u0442\u0430\u043c\u0438 \u043d\u0430 \u0433\u043e\u043b\u043e\u0432\u043d\u0456\u0439 \u0441\u0442\u043e\u0440\u0456\u043d\u0446\u0456. \u041f\u0435\u0440\u0448\u0456 6 \u043f\u043e\u0441\u0442\u0456\u0432 \u0432\u0456\u0434\u043e\u0431\u0440\u0430\u0436\u0430\u044e\u0442\u044c\u0441\u044f \u043d\u0430 \u0441\u0430\u0439\u0442\u0456.'}</p>
+          <p className="text-sm text-gray-500">{'Управління постами на головній сторінці. Перші 6 постів відображаються на сайті.'}</p>
         </div>
         <div className="flex items-center gap-2">
           <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm text-gray-500 hover:text-black border border-gray-200 hover:bg-gray-50">
@@ -79,11 +79,11 @@ export function InstagramManager() {
           </a>
           <button onClick={addPost} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 text-white text-sm font-bold hover:bg-purple-700">
             <Plus className="w-4 h-4" />
-            {'\u0414\u043e\u0434\u0430\u0442\u0438'}
+            {'Додати'}
           </button>
           <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black text-white text-sm font-bold hover:bg-gray-800">
             <Save className="w-4 h-4" />
-            {saved ? '\u0417\u0431\u0435\u0440\u0435\u0436\u0435\u043d\u043e!' : '\u0417\u0431\u0435\u0440\u0435\u0433\u0442\u0438'}
+            {saved ? 'Збережено!' : 'Зберегти'}
           </button>
         </div>
       </div>
@@ -91,7 +91,7 @@ export function InstagramManager() {
       {posts.length === 0 ? (
         <div className="text-center py-12 text-gray-400 rounded-2xl border-2 border-dashed border-gray-200">
           <Instagram className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p className="text-sm">{'\u041f\u043e\u0441\u0442\u0456\u0432 \u043d\u0435\u043c\u0430\u0454. \u0414\u043e\u0434\u0430\u0439\u0442\u0435 \u043f\u0435\u0440\u0448\u0438\u0439 \u043f\u043e\u0441\u0442!'}</p>
+          <p className="text-sm">{'Постів немає. Додайте перший пост!'}</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -114,7 +114,7 @@ export function InstagramManager() {
               </div>
               <div className="p-3 space-y-2">
                 <div>
-                  <label className="text-xs font-bold text-gray-500">{'\u0417\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u043d\u044f'}</label>
+                  <label className="text-xs font-bold text-gray-500">{'Зображення'}</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -124,12 +124,12 @@ export function InstagramManager() {
                   <input
                     value={post.imageUrl || ''}
                     onChange={e => updatePost(post.id, { imageUrl: e.target.value })}
-                    placeholder="URL \u0430\u0431\u043e data URL"
+                    placeholder="URL або data URL"
                     className="w-full px-2 py-1.5 rounded-lg border border-gray-200 text-xs mt-1 focus:outline-none focus:ring-1 focus:ring-purple-500"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500">{'\u041f\u0456\u0434\u043f\u0438\u0441'}</label>
+                  <label className="text-xs font-bold text-gray-500">{'Підпис'}</label>
                   <input
                     value={post.caption}
                     onChange={e => updatePost(post.id, { caption: e.target.value })}
@@ -137,7 +137,7 @@ export function InstagramManager() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500">{'\u041f\u043e\u0441\u0438\u043b\u0430\u043d\u043d\u044f'}</label>
+                  <label className="text-xs font-bold text-gray-500">{'Посилання'}</label>
                   <input
                     value={post.link || ''}
                     onChange={e => updatePost(post.id, { link: e.target.value })}
@@ -147,7 +147,7 @@ export function InstagramManager() {
                 </div>
                 <div className="flex gap-2">
                   <div className="flex-1">
-                    <label className="text-xs font-bold text-gray-500">{'\u2764\ufe0f \u041b\u0430\u0439\u043a\u0438'}</label>
+                    <label className="text-xs font-bold text-gray-500">{'❤️ Лайки'}</label>
                     <input
                       type="number"
                       value={post.likes ?? 0}
@@ -156,7 +156,7 @@ export function InstagramManager() {
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="text-xs font-bold text-gray-500">{'\ud83d\udcac \u041a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0456'}</label>
+                    <label className="text-xs font-bold text-gray-500">{'💬 Коментарі'}</label>
                     <input
                       type="number"
                       value={post.comments ?? 0}
