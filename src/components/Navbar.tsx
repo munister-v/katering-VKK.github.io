@@ -219,7 +219,15 @@ export const Navbar = () => {
               </button>
               <Link
                 to="/admin"
-                className={`p-2 rounded-full hover:bg-white/10 transition-colors ${isScrolled ? 'text-black hover:bg-black/5' : 'text-white'}`}
+                className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full font-semibold text-xs uppercase tracking-wider transition-all ${isScrolled ? 'bg-black text-white hover:bg-gray-800' : 'bg-white/15 text-white hover:bg-white/25 backdrop-blur-md border border-white/20'}`}
+                title="Адмін-панель"
+              >
+                <Settings className="w-4 h-4" />
+                Адмін
+              </Link>
+              <Link
+                to="/admin"
+                className={`sm:hidden p-2 rounded-full hover:bg-white/10 transition-colors ${isScrolled ? 'text-black hover:bg-black/5' : 'text-white'}`}
                 title="Адмін-панель"
               >
                 <Settings className="w-5 h-5" />

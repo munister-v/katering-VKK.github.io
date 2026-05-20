@@ -118,53 +118,15 @@ function normalizeProducts(rows: ExcelRow[]): Product[] {
   return products;
 }
 
-async function uploadToApi(products: Product[]): Promise<void> {
-  const token = process.env.ADMIN_TOKEN;
-  const apiUrl = (process.env.API_URL || 'https://lumu-pearl.vercel.app/api').replace(/\/$/, '');
-
-  if (!token) {
-    console.error('Для завантаження потрібен ADMIN_TOKEN. Додай: ADMIN_TOKEN=твій_пароль');
-    process.exit(1);
-  }
-
-  console.log(`Відправляю ${products.length} товарів на ${apiUrl}...`);
-
-  const res = await fetch(`${apiUrl}/admin/products`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
-    body: JSON.stringify({ products, token }),
-  });
-
-  const text = await res.text();
-  let data: { ok?: boolean; error?: string } = {};
-  try {
-    data = JSON.parse(text);
-  } catch {
-    console.error('Відповідь:', text);
-    process.exit(1);
-  }
-
-  if (data.ok) {
-    console.log('✓ Товари збережені в GitHub. Через 1–2 хв з\'являться на сайті.');
-  } else {
-    console.error('Помилка:', data.error || text);
-    process.exit(1);
-  }
-}
-
 async function main() {
   const args = process.argv.slice(2);
-  const upload = args.includes('--upload');
   const xlsxPath = args.find(a => !a.startsWith('--')) ||
     path.join(process.cwd(), 'export_products_260311.xlsx') ||
     path.join(process.env.HOME || '', 'Downloads', 'export_products_260311.xlsx');
 
   if (!fs.existsSync(xlsxPath)) {
     console.error('Файл не знайдено:', xlsxPath);
-    console.error('Використання: npx tsx scripts/import-products-from-xlsx.ts [шлях/export_products_260311.xlsx] [--upload]');
+    console.error('Використання: npx tsx scripts/import-products-from-xlsx.ts [шлях/до/файлу.xlsx]');
     process.exit(1);
   }
 
@@ -178,14 +140,7 @@ async function main() {
   const outPath = path.join(process.cwd(), 'public', 'products.json');
   fs.writeFileSync(outPath, JSON.stringify(products, null, 2), 'utf-8');
   console.log('✓ Збережено в', outPath);
-
-  if (upload) {
-    await uploadToApi(products);
-  } else {
-    console.log('');
-    console.log('Щоб залити на сайт, запусти з --upload та ADMIN_TOKEN:');
-    console.log('  ADMIN_TOKEN=твій_пароль npx tsx scripts/import-products-from-xlsx.ts --upload');
-  }
+  console.log('Завантажте JSON через адмін-панель (вкладка Товари → Автозавантажити товари).');
 }
 
 main().catch(err => {

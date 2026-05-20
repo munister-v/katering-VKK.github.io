@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { useStore } from '../store';
 import { useProducts, parsePrice } from '../context/ProductsContext';
 import { isValidEmail, isValidUAPhone, formatPhoneForSubmit } from '../utils/validation';
-import { formatProductMeta, productDisplayName } from '../utils/productImport';
+import { productDisplayName } from '../utils/productImport';
 
 function formatPrice(n: number) {
   return n.toLocaleString('uk-UA') + ' ₴';
@@ -37,22 +37,25 @@ const initialForm: FormData = {
   comment: '',
 };
 
-const TELEGRAM_API = (import.meta.env.VITE_TELEGRAM_API_URL || 'https://lumu-pearl.vercel.app/api').replace(/\/$/, '');
+const ORDERS_KEY = 'lumu_admin_orders';
 
-async function sendToTelegram(text: string): Promise<{ ok: boolean; error?: string }> {
-  const endpoint = `${TELEGRAM_API}/telegram`;
+interface LocalOrder {
+  id: string;
+  date: string;
+  customer: { name: string; phone: string; email?: string; city?: string; address?: string; comment?: string };
+  items: { productId: number; name: string; price: string; qty: number }[];
+  total: string;
+  status: 'new';
+}
+
+function saveOrderLocally(order: LocalOrder): { ok: boolean; error?: string } {
   try {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
-    });
-    if (res.ok) return { ok: true };
-    const err = await res.text();
-    return { ok: false, error: err || `HTTP ${res.status}` };
+    const existing = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+    existing.unshift(order);
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(existing));
+    return { ok: true };
   } catch (e) {
-    const msg = (e as Error).message || 'Помилка мережі';
-    return { ok: false, error: msg.includes('fetch') || msg.includes('Network') ? 'API недоступний. Перевірте VITE_TELEGRAM_API_URL в GitHub Secrets.' : msg };
+    return { ok: false, error: (e as Error).message || 'Помилка збереження' };
   }
 }
 
@@ -95,8 +98,6 @@ export const CheckoutForm = ({ onBack, onSuccess }: { onBack: () => void; onSucc
     return Object.keys(e).length === 0;
   };
 
-  const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -106,36 +107,30 @@ export const CheckoutForm = ({ onBack, onSuccess }: { onBack: () => void; onSucc
     }
     setLoading(true);
     const phone = formatPhoneForSubmit(form.phone);
-    const items = cart.map(({ product, qty }, i) => {
+    const orderItems = cart.map(({ product, qty }) => {
       const p = products.find(x => x.id === product.id) || product;
-      const priceNum = parsePrice(p.price);
-      const subtotal = priceNum * qty;
-      const tagPart = p.tag ? ` / ${escapeHtml(p.tag)}` : '';
-      const meta = formatProductMeta(p);
-      const metaPart = meta ? ` | ${escapeHtml(meta)}` : '';
-      return `${i + 1}. ID:${p.id}${metaPart} | ${escapeHtml(productDisplayName(p))} | ${p.category}${tagPart} | ${qty} шт. × ${p.price} = ${subtotal.toLocaleString('uk-UA')} ₴`;
+      return { productId: p.id, name: productDisplayName(p), price: p.price, qty };
     });
     const deliveryLabel = DELIVERY_OPTIONS.find(d => d.id === form.delivery)?.label ?? form.delivery;
-    const lines = [
-      '🛒 <b>Нове замовлення</b>',
-      '',
-      `👤 ${escapeHtml(form.name.trim())}`,
-      `📞 ${phone}`,
-      `✉️ ${escapeHtml(form.email.trim())}`,
-      `🚚 <b>Доставка:</b> ${escapeHtml(deliveryLabel)}`,
-      form.delivery === 'self' ? `📍 ${escapeHtml(form.city.trim())}` : `📍 ${escapeHtml(form.city.trim())}, ${escapeHtml(form.address.trim())}`,
-      form.comment.trim() ? `💬 ${escapeHtml(form.comment.trim())}` : '',
-      '',
-      '📦 <b>Товари:</b>',
-      ...items,
-      '',
-      `💰 <b>Разом: ${cartTotal}</b>`,
-    ];
-    const text = lines.filter(Boolean).join('\n');
-    const result = await sendToTelegram(text);
+    const order: LocalOrder = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      date: new Date().toISOString(),
+      customer: {
+        name: form.name.trim(),
+        phone,
+        email: form.email.trim() || undefined,
+        city: form.city.trim() || undefined,
+        address: form.delivery !== 'self' ? form.address.trim() : undefined,
+        comment: form.comment.trim() || undefined,
+      },
+      items: orderItems,
+      total: cartTotal,
+      status: 'new',
+    };
+    const result = saveOrderLocally(order);
     setLoading(false);
     if (result.ok) onSuccess();
-    else setErrors({ name: result.error || 'Помилка відправки. Спробуйте ще раз або зателефонуйте.' });
+    else setErrors({ name: result.error || 'Помилка збереження. Спробуйте ще раз.' });
   };
 
   return (

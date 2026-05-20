@@ -14,6 +14,7 @@ interface ProductsContextType {
 const ProductsContext = createContext<ProductsContextType | null>(null);
 
 const PRODUCTS_URL = '/products.json';
+const PRODUCTS_STORAGE_KEY = 'lumu_admin_products';
 
 export function ProductsProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>(staticProducts);
@@ -23,6 +24,19 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
+    try {
+      const stored = localStorage.getItem(PRODUCTS_STORAGE_KEY);
+      if (stored) {
+        const data = JSON.parse(stored);
+        if (Array.isArray(data) && data.length > 0) {
+          setProducts(data);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch {
+      // Fallback
+    }
     try {
       const res = await fetch(`${PRODUCTS_URL}?t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {

@@ -105,12 +105,25 @@ interface SiteContentContextType {
 const SiteContentContext = createContext<SiteContentContextType | null>(null);
 
 const SITE_CONTENT_URL = '/site-content.json';
+const SITE_CONTENT_STORAGE_KEY = 'lumu_admin_site_content';
 
 export function SiteContentProvider({ children }: { children: ReactNode }) {
   const [content, setContent] = useState<SiteContent>(DEFAULT);
   const [loading, setLoading] = useState(false);
 
   const fetchContent = useCallback(async () => {
+    try {
+      const stored = localStorage.getItem(SITE_CONTENT_STORAGE_KEY);
+      if (stored) {
+        const data = JSON.parse(stored);
+        if (data && typeof data === 'object') {
+          setContent({ ...DEFAULT, ...data });
+          return;
+        }
+      }
+    } catch {
+      // Fallback
+    }
     try {
       const res = await fetch(`${SITE_CONTENT_URL}?t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
